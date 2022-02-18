@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_frag_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".SearchFragment">
+
+    <EditText
+        android:id="@+id/search_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:paddingTop="55dp"
+        android:paddingBottom="75dp"
+        android:textSize="32sp"
+        android:textAlignment="center"
+        android:singleLine="true"
+        android:hint="@string/search_edit_text_hint"
+        android:textColor="@android:color/white"
+        android:inputType="textVisiblePassword"
+        android:textStyle="bold"
+        android:background="@color/samosan"
+        android:cursorVisible="false"
+        android:text="@string/search_edit_text_default"
+        />
+
+    <FrameLayout
+        android:id="@+id/vocab_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/samosan"
+        >
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            android:background="@drawable/meaning_frame_bg"
+            >
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_meaning_header"
+                />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_onyms_header"
+                />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_slang_header"
+                />
+        </com.google.android.material.tabs.TabLayout>
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/page_nav_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:title="@string/page_nav_search"/>
+    <item
+        android:id="@+id/page_nav_history"
+        android:enabled="true"
+        android:icon="@drawable/ic_history"
+        android:title="@string/page_nav_history"/>
+    <item
+        android:id="@+id/page_nav_saved"
+        android:enabled="true"
+        android:icon="@drawable/ic_saved"
+        android:title="@string/page_nav_saved"/>
+</menu>
