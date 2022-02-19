@@ -29,6 +29,7 @@
         />
 
     <LinearLayout
+        android:id="@+id/tab_content_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

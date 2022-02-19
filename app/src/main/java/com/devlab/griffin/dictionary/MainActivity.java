@@ -2,6 +2,7 @@ package com.devlab.griffin.dictionary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.service.autofill.SaveCallback;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     public SearchFragment mSearchFragment;
     public HistoryFragment mHistoryFragment;
     public SavedFragment mSavedFragment;
+    public Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,13 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         mHistoryFragment = new HistoryFragment();
         mSavedFragment = new SavedFragment();
 
+        activeFragment = mSearchFragment;
+
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.fragment_container, mSavedFragment).hide(mSavedFragment).
+                add(R.id.fragment_container, mHistoryFragment).hide(mHistoryFragment).
+                add(R.id.fragment_container, mSearchFragment).commit();
+
         mNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mNavigationView.setOnItemSelectedListener(this);
         mNavigationView.setSelectedItemId(R.id.page_nav_search);
@@ -42,15 +51,18 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         int itemId = item.getItemId();
 
         if(itemId == R.id.page_nav_search) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mSearchFragment).commit();
+            getSupportFragmentManager().beginTransaction().hide(activeFragment).show(mSearchFragment).commit();
+            activeFragment = mSearchFragment;
             return true;
         }
         else if (itemId == R.id.page_nav_history) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mHistoryFragment).commit();
+            getSupportFragmentManager().beginTransaction().hide(activeFragment).show(mHistoryFragment).commit();
+            activeFragment = mHistoryFragment;
             return true;
         }
         else if (itemId == R.id.page_nav_saved) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mSavedFragment).commit();
+            getSupportFragmentManager().beginTransaction().hide(activeFragment).show(mSavedFragment).commit();
+            activeFragment = mSavedFragment;
             return true;
         }
         else {
