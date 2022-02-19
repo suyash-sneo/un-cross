@@ -2,12 +2,23 @@ package com.devlab.griffin.dictionary;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,19 +38,13 @@ public class SearchFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private TabLayout mTabLayout;
+    private ViewPager2 mViewPager;
+
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -62,6 +67,52 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        mTabLayout = (TabLayout) view.findViewById(R.id.tl_vocab);
+        mViewPager = (ViewPager2) view.findViewById(R.id.view_pager);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ArrayList<String> tabsList = new ArrayList<>(0);
+        tabsList.add(getString(R.string.tab_meaning_header));
+        tabsList.add(getString(R.string.tab_onyms_header));
+        tabsList.add(getString(R.string.tab_slang_header));
+
+        VocabAdapter adapter = new VocabAdapter(this);
+        mViewPager.setAdapter(adapter);
+
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(mTabLayout, mViewPager,
+                (tab, position) -> tab.setText(tabsList.get(position))
+        );
+        tabLayoutMediator.attach();
+    }
+
+    private class VocabAdapter extends FragmentStateAdapter {
+
+        ArrayList<Fragment> fragmentArrayList;
+        ArrayList<String> stringArrayList;
+
+        public VocabAdapter(Fragment fragment) {
+            super(fragment);
+            fragmentArrayList = new ArrayList<Fragment>();
+            stringArrayList = new ArrayList<String>();
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            VocabFragment fragment = VocabFragment.newInstance("" + position + 1);
+            return fragment;
+        }
+
+        @Override
+        public int getItemCount() {
+            return 3;
+        }
     }
 }

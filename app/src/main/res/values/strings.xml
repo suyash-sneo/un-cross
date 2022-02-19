@@ -10,4 +10,6 @@
     <string name="tab_meaning_header">meaning</string>
     <string name="tab_onyms_header">-onyms</string>
     <string name="tab_slang_header">slang</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
