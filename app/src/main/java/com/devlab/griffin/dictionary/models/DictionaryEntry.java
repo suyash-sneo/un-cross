@@ -7,15 +7,15 @@ public class DictionaryEntry {
 
     private static final String TAG = DictionaryEntry.class.getSimpleName();
 
-    private HashMap<String, ArrayList<MeaningDefinitionExamples>> meanings;
+    private HashMap<String, ArrayList<MeaningDefinitionExample>> meanings;
     private HashMap<String, Onyms> onyms;
     private ArrayList<UdDefinitionExample> slangs;
 
-    public HashMap<String, ArrayList<MeaningDefinitionExamples>> getMeanings() {
+    public HashMap<String, ArrayList<MeaningDefinitionExample>> getMeanings() {
         return meanings;
     }
 
-    public void setMeanings(HashMap<String, ArrayList<MeaningDefinitionExamples>> meanings) {
+    public void setMeanings(HashMap<String, ArrayList<MeaningDefinitionExample>> meanings) {
         this.meanings = meanings;
     }
 
@@ -35,18 +35,18 @@ public class DictionaryEntry {
         this.slangs = slangs;
     }
 
-    public void addMeaning(String partOfSpeech, MeaningDefinitionExamples meaning) {
+    public void addMeaning(String partOfSpeech, MeaningDefinitionExample meaning) {
         if(this.meanings == null)
             this.meanings = new HashMap<>();
 
         if(meaning != null) {
             if(this.meanings.containsKey(partOfSpeech)) {
-                ArrayList<MeaningDefinitionExamples> existingMeanings = this.meanings.get(partOfSpeech);
+                ArrayList<MeaningDefinitionExample> existingMeanings = this.meanings.get(partOfSpeech);
                 existingMeanings.add(meaning);
                 this.meanings.put(partOfSpeech, existingMeanings);
             }
             else {
-                ArrayList<MeaningDefinitionExamples> newMeanings = new ArrayList<>();
+                ArrayList<MeaningDefinitionExample> newMeanings = new ArrayList<>();
                 newMeanings.add(meaning);
                 this.meanings.put(partOfSpeech, newMeanings);
             }
