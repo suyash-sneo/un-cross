@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.service.autofill.SaveCallback;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.devlab.griffin.dictionary.fragments.HistoryFragment;
+import com.devlab.griffin.dictionary.fragments.SavedFragment;
+import com.devlab.griffin.dictionary.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
