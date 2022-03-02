@@ -149,6 +149,24 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         mContext = context;
     }
 
+    private void setDictionaryEntry(DictionaryEntry dictionaryEntry) {
+        meaningFragment.setMeanings(dictionaryEntry.getMeanings(), mContext);
+        onymsFragment.setOnyms(dictionaryEntry.getOnyms(), mContext);
+        slangsFragment.setSlangs(dictionaryEntry.getSlangs(), mContext);
+    }
+
+    private void showLoadingInChildrenFragments() {
+        meaningFragment.startLoading();
+        onymsFragment.startLoading();
+        slangsFragment.startLoading();
+    }
+
+    private void showErrorInChildrenFragments() {
+        meaningFragment.showError();
+        onymsFragment.showError();
+        slangsFragment.showError();
+    }
+
     @NonNull
     @Override
     public Loader<DictionaryEntry> onCreateLoader(int id, @Nullable Bundle args) {
@@ -159,6 +177,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                 if(args == null)
                     return;
 
+                showLoadingInChildrenFragments();
                 forceLoad();
             }
 
@@ -181,6 +200,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                     return dictionaryEntry;
                 }
                 catch (Exception e) {
+                    showErrorInChildrenFragments();
                     Log.e(TAG, "loadInBackground: Exception: ", e.fillInStackTrace());
                     return null;
                 }
@@ -195,11 +215,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(@NonNull Loader<DictionaryEntry> loader, DictionaryEntry dictionaryEntry) {
-        meaningFragment.setMeanings(dictionaryEntry.getMeanings(), mContext);
-        onymsFragment.setOnyms(dictionaryEntry.getOnyms(), mContext);
-        slangsFragment.setSlangs(dictionaryEntry.getSlangs(), mContext);
-        Toast toast = Toast.makeText(mContext, "FETCHED", Toast.LENGTH_LONG);
-        toast.show();
+        setDictionaryEntry(dictionaryEntry);
     }
 
     @Override

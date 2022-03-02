@@ -5,21 +5,55 @@
     android:layout_height="match_parent"
     tools:context=".fragments.VocabFragment">
 
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_view"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="44dp"
+        android:paddingTop="8dp"
+        >
+        <LinearLayout
+            android:id="@+id/data_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="8dp"
-            android:paddingBottom="44dp"
-            android:paddingTop="8dp"
-            >
-            <LinearLayout
-                android:id="@+id/data_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/error_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        >
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/error_no_data"
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/error_view_text"
+            android:layout_gravity="center"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:layout_marginBottom="60dp" />
 </FrameLayout>

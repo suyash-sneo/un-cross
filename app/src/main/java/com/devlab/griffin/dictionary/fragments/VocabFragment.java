@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.devlab.griffin.dictionary.R;
@@ -39,6 +41,8 @@ public class VocabFragment extends Fragment {
     private String mVocabState;
     private LinearLayout mVocabLayout;
     private NestedScrollView mScrollView;
+    private LinearLayout mErrorView;
+    private ProgressBar mProgressBar;
 
     public VocabFragment() {
         // Required empty public constructor
@@ -69,8 +73,29 @@ public class VocabFragment extends Fragment {
         // Get TextView and Populate it
         mVocabLayout = (LinearLayout) view.findViewById(R.id.data_layout);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scroll_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.pb_loading_indicator);
+        mErrorView = (LinearLayout) view.findViewById(R.id.error_display);
 
         return view;
+    }
+
+    public void startLoading() {
+        resetContent();
+        mVocabLayout.setVisibility(View.INVISIBLE);
+        mErrorView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void showContent() {
+        mVocabLayout.setVisibility(View.VISIBLE);
+        mErrorView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    public void showError() {
+        mErrorView.setVisibility(View.VISIBLE);
+        mVocabLayout.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private void resetContent() {
@@ -83,63 +108,81 @@ public class VocabFragment extends Fragment {
     }
 
     public void setMeanings(HashMap<String, ArrayList<MeaningDefinitionExample>> meanings, Context context) {
-        if(mVocabState.equals(Constants.MEANING_FRAGMENT_STATE) && meanings != null && meanings.size() > 0) {
-            resetContent();
-            meanings.forEach((key, value) -> {
-                appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView(key, context));
-                for(int i=0; i<value.size(); i++) {
-                    MeaningDefinitionExample mde = value.get(i);
-                    if(mde != null) {
-                        appendViewToLayout(TextViewBuilderUtils.prepareMeaningDefinitionTextView(i, mde.getDefinition(), context));
-                        if(mde.getExample() != null && mde.getExample().length()>0) {
-                            appendViewToLayout(TextViewBuilderUtils.prepareMeaningExampleTextView(mde.getExample(), context));
+        if(mVocabState.equals(Constants.MEANING_FRAGMENT_STATE)){
+            if(meanings != null && meanings.size() > 0) {
+                resetContent();
+                meanings.forEach((key, value) -> {
+                    appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView(key, context));
+                    for(int i=0; i<value.size(); i++) {
+                        MeaningDefinitionExample mde = value.get(i);
+                        if(mde != null) {
+                            appendViewToLayout(TextViewBuilderUtils.prepareMeaningDefinitionTextView(i, mde.getDefinition(), context));
+                            if(mde.getExample() != null && mde.getExample().length()>0) {
+                                appendViewToLayout(TextViewBuilderUtils.prepareMeaningExampleTextView(mde.getExample(), context));
+                            }
                         }
                     }
-                }
-                appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
-            });
+                    appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
+                });
+
+                showContent();
+            } else {
+                showError();
+            }
         }
     }
 
     public void setOnyms(HashMap<String, Onyms> onyms, Context context) {
-        if(mVocabState.equals(Constants.ONYMS_FRAGMENT_STATE) && onyms != null && onyms.size() > 0) {
-            resetContent();
-            onyms.forEach((key, value) -> {
-                appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView(key, context));
-                ArrayList<String> synonyms = value.getSynonyms();
-                if(synonyms != null && synonyms.size() > 0) {
-                    appendViewToLayout(TextViewBuilderUtils.prepareOnymsHeadingTextView("synonyms", context));
-                    for(int i=0; i< synonyms.size(); i++) {
-                        appendViewToLayout(TextViewBuilderUtils.prepareOnymsTextView(i, synonyms.get(i), context));
+        if(mVocabState.equals(Constants.ONYMS_FRAGMENT_STATE)) {
+            if(onyms != null && onyms.size() > 0) {
+                resetContent();
+                onyms.forEach((key, value) -> {
+                    appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView(key, context));
+                    ArrayList<String> synonyms = value.getSynonyms();
+                    if(synonyms != null && synonyms.size() > 0) {
+                        appendViewToLayout(TextViewBuilderUtils.prepareOnymsHeadingTextView("synonyms", context));
+                        for(int i=0; i< synonyms.size(); i++) {
+                            appendViewToLayout(TextViewBuilderUtils.prepareOnymsTextView(i, synonyms.get(i), context));
+                        }
                     }
-                }
-                ArrayList<String> antonyms = value.getAntonyms();
-                if(antonyms != null && antonyms.size() > 0) {
-                    appendViewToLayout(TextViewBuilderUtils.prepareOnymsHeadingTextView("antonyms", context));
-                    for(int i=0; i< antonyms.size(); i++) {
-                        appendViewToLayout(TextViewBuilderUtils.prepareOnymsTextView(i, antonyms.get(i), context));
+                    ArrayList<String> antonyms = value.getAntonyms();
+                    if(antonyms != null && antonyms.size() > 0) {
+                        appendViewToLayout(TextViewBuilderUtils.prepareOnymsHeadingTextView("antonyms", context));
+                        for(int i=0; i< antonyms.size(); i++) {
+                            appendViewToLayout(TextViewBuilderUtils.prepareOnymsTextView(i, antonyms.get(i), context));
+                        }
                     }
-                }
-                appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
-            });
+                    appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
+                });
+
+                showContent();
+            } else {
+                showError();
+            }
         }
     }
 
     public void setSlangs(ArrayList<UdDefinitionExample> slangs, Context context) {
-        if(mVocabState.equals(Constants.SLANGS_FRAGMENT_STATE) && slangs != null && slangs.size() > 0) {
-            resetContent();
-            appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("urban dictionary\n", context));
+        if(mVocabState.equals(Constants.SLANGS_FRAGMENT_STATE)) {
+            if(slangs != null && slangs.size() > 0) {
+                resetContent();
+                appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("urban dictionary\n", context));
 
-            for(int i=0; i<slangs.size(); i++) {
-                UdDefinitionExample ude = slangs.get(i);
-                if (ude != null && ude.getDefinition() != null && ude.getDefinition().length() > 0) {
-                    appendViewToLayout(TextViewBuilderUtils.prepareSlangsDefinition(i, ude.getDefinition(), context));
-                    if(ude.getExample() != null && ude.getExample().length()>0) {
-                        appendViewToLayout(TextViewBuilderUtils.prepareSlangsExample(ude.getExample(), context));
+                for(int i=0; i<slangs.size(); i++) {
+                    UdDefinitionExample ude = slangs.get(i);
+                    if (ude != null && ude.getDefinition() != null && ude.getDefinition().length() > 0) {
+                        appendViewToLayout(TextViewBuilderUtils.prepareSlangsDefinition(i, ude.getDefinition(), context));
+                        if(ude.getExample() != null && ude.getExample().length()>0) {
+                            appendViewToLayout(TextViewBuilderUtils.prepareSlangsExample(ude.getExample(), context));
+                        }
+
+                        appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
                     }
-
-                    appendViewToLayout(TextViewBuilderUtils.preparePartOfSpeechTextView("", context));
                 }
+
+                showContent();
+            } else {
+                showError();
             }
         }
     }

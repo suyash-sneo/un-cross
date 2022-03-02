@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/drawable/bottom_nav_bg.xml" value="0.22135416666666666" />
+        <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/drawable/error_no_data.xml" value="0.3828125" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/drawable/search_text_bg.xml" value="0.22135416666666666" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_history.xml" value="0.36666666666666664" />

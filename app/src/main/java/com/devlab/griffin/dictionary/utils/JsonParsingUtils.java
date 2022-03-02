@@ -86,7 +86,7 @@ public class JsonParsingUtils {
     }
 
     public static HashMap<String, Onyms> parseOnyms(String onymsStr) throws JSONException {
-        if(onymsStr.length() == 0) {
+        if(onymsStr == null || onymsStr.length() == 0) {
             Log.e(TAG, "parseOnyms: Empty onymsStr");
             return null;
         }
@@ -144,7 +144,7 @@ public class JsonParsingUtils {
     }
 
     public static ArrayList<UdDefinitionExample> parseSlangs(String slangsStr) throws JSONException {
-        if(slangsStr == null) {
+        if(slangsStr == null || slangsStr.length() == 0) {
             Log.e(TAG, "parseSlangs: null slangsStr");
             return null;
         }
