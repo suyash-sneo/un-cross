@@ -6,12 +6,20 @@
     tools:context=".fragments.VocabFragment">
 
 
-        <TextView
-            android:id="@+id/tv_vocab_content"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:textSize="18sp"
-            />
+            android:paddingHorizontal="8dp"
+            android:paddingBottom="44dp"
+            android:paddingTop="8dp"
+            >
+            <LinearLayout
+                android:id="@+id/data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 </FrameLayout>

@@ -20,7 +20,7 @@ public class JsonParsingUtils {
     private static final String TAG = JsonParsingUtils.class.getSimpleName();
 
     public static HashMap<String, ArrayList<MeaningDefinitionExample>> parseMeanings(String meaningsStr) throws JSONException {
-        if(meaningsStr == null) {
+        if(meaningsStr == null || meaningsStr.length()<=2) {
             Log.e(TAG, "parseMeanings: Null meaningStr");
             return null;
         }
@@ -30,32 +30,51 @@ public class JsonParsingUtils {
         final String DEFINITIONS_KEY = "definitions";
         final String DEFINITION_KEY = "definition";
         final String EXAMPLE_KEY = "example";
+        JSONArray responseArray;
 
-        JSONArray responseArray = new JSONArray(meaningsStr);
-        JSONObject responseObject = responseArray.getJSONObject(0);
-        JSONArray meaningsArray = responseObject.getJSONArray(MEANINGS_KEY);
+        try {
+            responseArray = new JSONArray(meaningsStr);
+        } catch (Exception e) {
+            Log.e(TAG, "parseMeanings: Exception in parsing JSON array. object not found", e.fillInStackTrace());
+            return null;
+        }
+
+        JSONObject responseObject = responseArray.optJSONObject(0);
+        if(responseObject == null)
+            return null;
+
+        JSONArray meaningsArray = responseObject.optJSONArray(MEANINGS_KEY);
+        if(meaningsArray == null || meaningsArray.length() == 0)
+            return null;
 
         HashMap<String, ArrayList<MeaningDefinitionExample>> meanings = new HashMap<>();
 
         for(int i=0; i<meaningsArray.length(); i++) {
-            JSONObject posObject = meaningsArray.getJSONObject(i);
-            String partOfSpeech = posObject.getString(PART_OF_SPEECH_KEY);
-            JSONArray definitionsArray = posObject.getJSONArray(DEFINITIONS_KEY);
+            JSONObject posObject = meaningsArray.optJSONObject(i);
 
-            ArrayList<MeaningDefinitionExample> meaningList = new ArrayList<>();
+            if(posObject != null) {
+                String partOfSpeech = posObject.optString(PART_OF_SPEECH_KEY, "");
+                JSONArray definitionsArray = posObject.optJSONArray(DEFINITIONS_KEY);
 
-            for(int j=0; j<definitionsArray.length(); j++) {
-                JSONObject definition = definitionsArray.getJSONObject(j);
+                if(definitionsArray != null) {
+                    ArrayList<MeaningDefinitionExample> meaningList = new ArrayList<>();
 
-                MeaningDefinitionExample meaning = new MeaningDefinitionExample(
-                        definition.getString(DEFINITION_KEY),
-                        definition.getString(EXAMPLE_KEY));
+                    for(int j=0; j<definitionsArray.length(); j++) {
+                        JSONObject definition = definitionsArray.optJSONObject(j);
 
-                meaningList.add(meaning);
-            }
+                        if(definition != null) {
+                            MeaningDefinitionExample meaning = new MeaningDefinitionExample(
+                                    definition.optString(DEFINITION_KEY, ""),
+                                    definition.optString(EXAMPLE_KEY, ""));
 
-            if(meaningList.size() > 0) {
-                meanings.put(partOfSpeech, meaningList);
+                            meaningList.add(meaning);
+                        }
+                    }
+
+                    if(meaningList.size() > 0) {
+                        meanings.put(partOfSpeech, meaningList);
+                    }
+                }
             }
         }
 
@@ -75,7 +94,14 @@ public class JsonParsingUtils {
         final String SYNONYMS_KEY = "syn";
         final String ANTONYMS_KEY = "ant";
 
-        JSONObject responseObject = new JSONObject(onymsStr);
+        JSONObject responseObject;
+        try {
+            responseObject = new JSONObject(onymsStr);
+        } catch (Exception e) {
+            Log.e(TAG, "parseOnyms: Exception in parsing JSON object. object not found", e.fillInStackTrace());
+            return null;
+        }
+
         Iterator<String> keys = responseObject.keys();
 
         HashMap<String, Onyms> onymsMap = null;
@@ -86,28 +112,30 @@ public class JsonParsingUtils {
 
             while(keys.hasNext()) {
                 String partOfSpeech = keys.next();
-                JSONObject onymsObject = responseObject.getJSONObject(partOfSpeech);
+                JSONObject onymsObject = responseObject.optJSONObject(partOfSpeech);
 
-                JSONArray synonymsArray = onymsObject.getJSONArray(SYNONYMS_KEY);
-                JSONArray antonymsArray = onymsObject.getJSONArray(ANTONYMS_KEY);
+                if(onymsObject != null) {
+                    JSONArray synonymsArray = onymsObject.optJSONArray(SYNONYMS_KEY);
+                    JSONArray antonymsArray = onymsObject.optJSONArray(ANTONYMS_KEY);
 
-                if(synonymsArray != null || antonymsArray != null) {
-                    ArrayList<String> synonyms = null;
-                    if(synonymsArray != null) {
-                        synonyms = new ArrayList<>();
-                        for(int i=0; i<synonymsArray.length(); i++)
-                            synonyms.add(synonymsArray.getString(i));
+                    if(synonymsArray != null || antonymsArray != null) {
+                        ArrayList<String> synonyms = null;
+                        if(synonymsArray != null) {
+                            synonyms = new ArrayList<>();
+                            for(int i=0; i<synonymsArray.length(); i++)
+                                synonyms.add(synonymsArray.optString(i, ""));
+                        }
+
+                        ArrayList<String> antonyms = null;
+                        if(antonymsArray != null) {
+                            antonyms = new ArrayList<>();
+                            for(int i=0; i<antonymsArray.length(); i++)
+                                antonyms.add(antonymsArray.optString(i, ""));
+                        }
+
+                        onyms = new Onyms(synonyms, antonyms);
+                        onymsMap.put(partOfSpeech, onyms);
                     }
-
-                    ArrayList<String> antonyms = null;
-                    if(antonymsArray != null) {
-                        antonyms = new ArrayList<>();
-                        for(int i=0; i<antonymsArray.length(); i++)
-                            antonyms.add(antonymsArray.getString(i));
-                    }
-
-                    onyms = new Onyms(synonyms, antonyms);
-                    onymsMap.put(partOfSpeech, onyms);
                 }
             }
         }
@@ -123,21 +151,30 @@ public class JsonParsingUtils {
 
         final String LIST_KEY = "list";
         final String DEFINITION_KEY = "definition";
-        final String EXAMPLE_KEY = "key";
+        final String EXAMPLE_KEY = "example";
 
         ArrayList<UdDefinitionExample> slangs = null;
 
-        JSONObject responseObject = new JSONObject(slangsStr);
-        JSONArray listObject = responseObject.getJSONArray(LIST_KEY);
+        JSONObject responseObject;
+        try {
+            responseObject = new JSONObject(slangsStr);
+        } catch (Exception e) {
+            Log.e(TAG, "parseSlangs: Exception in parsing JSON object. object not found", e.fillInStackTrace());
+            return null;
+        }
 
-        if(listObject.length() > 0) {
+        JSONArray listObject = responseObject.optJSONArray(LIST_KEY);
+
+        if(listObject != null && listObject.length() > 0) {
             slangs = new ArrayList<>();
 
             for(int i=0; i<listObject.length(); i++) {
-                JSONObject defObject = listObject.getJSONObject(i);
+                JSONObject defObject = listObject.optJSONObject(i);
 
-                UdDefinitionExample udDefinitionExample = new UdDefinitionExample(defObject.getString(DEFINITION_KEY), defObject.getString(EXAMPLE_KEY));
-                slangs.add(udDefinitionExample);
+                if(defObject != null) {
+                    UdDefinitionExample udDefinitionExample = new UdDefinitionExample(defObject.optString(DEFINITION_KEY, ""), defObject.optString(EXAMPLE_KEY, ""));
+                    slangs.add(udDefinitionExample);
+                }
             }
         }
 

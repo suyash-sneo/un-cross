@@ -10,4 +10,12 @@ public class Constants {
 
     public static final String X_RAPID_API_HOST_HEADER_KEY = "x-rapidapi-host";
     public static final String X_RAPID_API_KEY_HEADER_KEY = "x-rapidapi-key";
+
+    public static final int MEANING_FRAGMENT_POSITION = 0;
+    public static final int ONYMS_FRAGMENT_POSITION = 1;
+    public static final int SLANGS_FRAGMENT_POSITION = 2;
+
+    public static final String MEANING_FRAGMENT_STATE = "meanings";
+    public static final String ONYMS_FRAGMENT_STATE = "onyms";
+    public static final String SLANGS_FRAGMENT_STATE = "slangs";
 }

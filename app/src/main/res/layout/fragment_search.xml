@@ -7,6 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".fragments.SearchFragment">
 
     <EditText
@@ -26,6 +28,7 @@
         android:background="@color/samosan"
         android:cursorVisible="false"
         android:text="@string/search_edit_text_default"
+        android:imeOptions="actionSearch"
         />
 
     <LinearLayout
