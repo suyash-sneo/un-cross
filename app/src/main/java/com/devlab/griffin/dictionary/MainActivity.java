@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.fragments.HistoryFragment;
 import com.devlab.griffin.dictionary.fragments.SavedFragment;
 import com.devlab.griffin.dictionary.fragments.SearchFragment;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
         setContentView(R.layout.activity_main);
 
-        mSearchFragment = new SearchFragment();
+        mSearchFragment = SearchFragment.newInstance(Constants.BUTTON_STATE_CLEAR, Constants.BUTTON_STATE_SAVE);
         mHistoryFragment = new HistoryFragment();
         mSavedFragment = new SavedFragment();
 

@@ -14,4 +14,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="error_view_text">Oops! No data found.</string>
+
+    <string name="clear_done_button_clear">CLEAR</string>
+    <string name="clear_done_button_done">DONE</string>
+    <string name="save_delete_button_save">SAVE</string>
+    <string name="save_delete_button_delete">DELETE</string>
 </resources>

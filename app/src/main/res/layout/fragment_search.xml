@@ -11,25 +11,76 @@
     android:focusableInTouchMode="true"
     tools:context=".fragments.SearchFragment">
 
-    <EditText
-        android:id="@+id/search_edit_text"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingHorizontal="10dp"
-        android:paddingTop="55dp"
-        android:paddingBottom="75dp"
-        android:textSize="32sp"
-        android:textAlignment="center"
-        android:singleLine="true"
-        android:hint="@string/search_edit_text_hint"
-        android:textColor="@android:color/white"
-        android:inputType="textVisiblePassword"
-        android:textStyle="bold"
-        android:background="@color/samosan"
-        android:cursorVisible="false"
-        android:text="@string/search_edit_text_default"
-        android:imeOptions="actionSearch"
-        />
+        android:paddingTop="35dp"
+        android:paddingBottom="15dp"
+        android:background="@color/samosan_dark"
+        >
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:textAlignment="center"
+            android:singleLine="true"
+            android:hint="@string/search_edit_text_hint"
+            android:textColor="@android:color/white"
+            android:inputType="textVisiblePassword"
+            android:textStyle="bold"
+            android:background="@color/samosan_dark"
+            android:cursorVisible="false"
+            android:text="@string/search_edit_text_default"
+            android:imeOptions="actionSearch"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clear_done_button"
+                android:layout_width="175dp"
+                android:layout_height="75dp"
+                app:icon="@drawable/clear"
+                app:iconSize="32dp"
+                app:iconGravity="top"
+                app:iconPadding="0dp"
+                android:text="@string/clear_done_button_clear"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/button_content"
+                app:cornerRadius="8dp"
+                android:padding="6dp"
+                android:layout_marginRight="5dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_delete_button"
+                android:layout_width="175dp"
+                android:layout_height="75dp"
+                app:icon="@drawable/button_save"
+                app:iconSize="32dp"
+                app:iconGravity="top"
+                app:iconPadding="0dp"
+                android:text="@string/save_delete_button_save"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/button_content"
+                app:cornerRadius="8dp"
+                android:padding="6dp"
+                android:layout_marginLeft="5dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/tab_content_layout"
@@ -41,7 +92,7 @@
             android:id="@+id/vocab_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/samosan"
+            android:background="@color/samosan_dark"
             >
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tl_vocab"

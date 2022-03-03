@@ -18,4 +18,9 @@ public class Constants {
     public static final String MEANING_FRAGMENT_STATE = "meanings";
     public static final String ONYMS_FRAGMENT_STATE = "onyms";
     public static final String SLANGS_FRAGMENT_STATE = "slangs";
+
+    public static final String BUTTON_STATE_CLEAR = "clear";
+    public static final String BUTTON_STATE_DONE = "done";
+    public static final String BUTTON_STATE_SAVE = "save";
+    public static final String BUTTON_STATE_DELETE = "delete";
 }

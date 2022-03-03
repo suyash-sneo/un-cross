@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="samosan">#DD4A48</color>
-    <color name="samosan_dark">#A13333</color>
+    <color name="samosan">#D2455E</color>
+    <color name="samosan_dark">#C91D41</color>
     <color name="cream">#FFEDDB</color>
+    <color name="button_content">#FEF9E7</color>
 </resources>

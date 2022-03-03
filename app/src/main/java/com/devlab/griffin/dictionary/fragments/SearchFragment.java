@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.models.DictionaryEntry;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.devlab.griffin.dictionary.utils.NetworkUtils;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -49,27 +52,31 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     public EditText mSearchEditText;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "clearDoneState";
+    private static final String ARG_PARAM2 = "saveDeleteState";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mClearDoneState;
+    private String mSaveDeleteState;
 
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
+    private MaterialButton mClearDoneButton, mSaveDeleteButton;
 
     public VocabFragment meaningFragment, onymsFragment, slangsFragment;
+
+    private String meaningStr, onymsStr, slangsStr;
+    private String mWord;
 
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    public static SearchFragment newInstance() {
+    public static SearchFragment newInstance(String clearDoneState, String saveDeleteState) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, clearDoneState);
+        args.putString(ARG_PARAM2, saveDeleteState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,10 +84,10 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //if (getArguments() != null) {
-        //    mParam1 = getArguments().getString(ARG_PARAM1);
-        //    mParam2 = getArguments().getString(ARG_PARAM2);
-        //}
+        if (getArguments() != null) {
+            mClearDoneState = getArguments().getString(ARG_PARAM1);
+            mSaveDeleteState = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
@@ -90,6 +97,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         mTabLayout = (TabLayout) view.findViewById(R.id.tl_vocab);
         mViewPager = (ViewPager2) view.findViewById(R.id.view_pager);
+        mClearDoneButton = (MaterialButton) view.findViewById(R.id.clear_done_button);
+        mSaveDeleteButton = (MaterialButton) view.findViewById(R.id.save_delete_button);
 
         return view;
     }
@@ -124,6 +133,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                         InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                         String word = mSearchEditText.getText().toString();
+                        mWord = word;
                         loadSearchResults(word);
                         mSearchEditText.clearFocus();
                         return true;
@@ -141,6 +151,9 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                 }
             }
         });
+
+        configureClearDoneButton();
+        configureSaveDeleteButton();
     }
 
     @Override
@@ -167,6 +180,26 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         slangsFragment.showError();
     }
 
+    private void configureClearDoneButton() {
+        if(mClearDoneState.equals(Constants.BUTTON_STATE_CLEAR)) {
+            mClearDoneButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.clear));
+            mClearDoneButton.setText(mContext.getString(R.string.clear_done_button_clear));
+            mClearDoneButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mSearchEditText.setText("");
+                }
+            });
+        }
+    }
+
+    private void configureSaveDeleteButton() {
+        if(mSaveDeleteState.equals(Constants.BUTTON_STATE_SAVE)) {
+            mSaveDeleteButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.button_save));
+            mSaveDeleteButton.setText(mContext.getString(R.string.save_delete_button_save));
+        }
+    }
+
     @NonNull
     @Override
     public Loader<DictionaryEntry> onCreateLoader(int id, @Nullable Bundle args) {
@@ -191,11 +224,11 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                 URL slangsUrl = NetworkUtils.buildUrbanDictionaryUrl(word);
 
                 try {
-                    String meaningsStr = NetworkUtils.getFreeDictionaryResponse(meaningsUrl);
-                    String onymsStr = NetworkUtils.getBigThesaurusResponse(onymsUrl);
-                    String slangsStr = NetworkUtils.getUrbanDictionaryResponse(slangsUrl);
+                    meaningStr = NetworkUtils.getFreeDictionaryResponse(meaningsUrl);
+                    onymsStr = NetworkUtils.getBigThesaurusResponse(onymsUrl);
+                    slangsStr = NetworkUtils.getUrbanDictionaryResponse(slangsUrl);
 
-                    DictionaryEntry dictionaryEntry = JsonParsingUtils.parseDictionaryEntry(meaningsStr, onymsStr, slangsStr);
+                    DictionaryEntry dictionaryEntry = JsonParsingUtils.parseDictionaryEntry(meaningStr, onymsStr, slangsStr);
 
                     return dictionaryEntry;
                 }
