@@ -64,8 +64,9 @@ public class NetworkUtils {
     public static String getFreeDictionaryResponse(URL url) {
 
         Request request = new Request.Builder().url(url).build();
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if(!response.isSuccessful()) {
                 Log.e(TAG, "getFreeDictionaryResponse: Unsuccessful response" + response);
                 return null;
@@ -74,6 +75,9 @@ public class NetworkUtils {
             return response.body().string();
         } catch (IOException e) {
             Log.e(TAG, "getFreeDictionaryResponse: IOException", e.fillInStackTrace());
+        } finally {
+            if(response != null)
+                response.close();
         }
 
         return null;
@@ -82,8 +86,9 @@ public class NetworkUtils {
     public static String getBigThesaurusResponse(URL url) {
 
         Request request = new Request.Builder().url(url).build();
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if(!response.isSuccessful()) {
                 Log.e(TAG, "getBigThesaurusResponse: Unsuccessful response" + response);
                 return null;
@@ -92,6 +97,9 @@ public class NetworkUtils {
             return response.body().string();
         } catch (IOException e) {
             Log.e(TAG, "getBigThesaurusResponse: IOException", e.fillInStackTrace());
+        } finally {
+            if(response != null)
+                response.close();
         }
 
         return null;
@@ -103,8 +111,9 @@ public class NetworkUtils {
                 addHeader(Constants.X_RAPID_API_HOST_HEADER_KEY, BuildConfig.X_RAPID_API_HOST).
                 addHeader(Constants.X_RAPID_API_KEY_HEADER_KEY, BuildConfig.X_RAPID_API_KEY).
                 build();
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if(!response.isSuccessful()) {
                 Log.e(TAG, "getUrbanDictionaryResponse: Unsuccessful response" + response);
                 return null;
@@ -113,6 +122,9 @@ public class NetworkUtils {
             return response.body().string();
         } catch (IOException e) {
             Log.e(TAG, "getUrbanDictionaryResponse: IOException", e.fillInStackTrace());
+        } finally {
+            if(response != null)
+                response.close();
         }
 
         return null;

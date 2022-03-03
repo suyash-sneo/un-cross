@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.devlab.griffin.dictionary.constants.Constants;
+import com.devlab.griffin.dictionary.data.DictionaryDbHelper;
+import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.fragments.HistoryFragment;
 import com.devlab.griffin.dictionary.fragments.SavedFragment;
 import com.devlab.griffin.dictionary.fragments.SearchFragment;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         mNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mNavigationView.setOnItemSelectedListener(this);
         mNavigationView.setSelectedItemId(R.id.page_nav_search);
+
+        DictionaryQueryAgent.initializeDb(this);
     }
 
     @Override

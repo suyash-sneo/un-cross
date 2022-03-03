@@ -23,4 +23,7 @@ public class Constants {
     public static final String BUTTON_STATE_DONE = "done";
     public static final String BUTTON_STATE_SAVE = "save";
     public static final String BUTTON_STATE_DELETE = "delete";
+
+
+    public static final String ERROR_SAVE_FAILED = "Failed to Save the word";
 }

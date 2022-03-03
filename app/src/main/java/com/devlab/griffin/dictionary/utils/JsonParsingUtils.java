@@ -19,6 +19,10 @@ public class JsonParsingUtils {
 
     private static final String TAG = JsonParsingUtils.class.getSimpleName();
 
+    public static boolean IsNullOrEmpty(String param) {
+        return (param == null || param.length() <= 0);
+    }
+
     public static HashMap<String, ArrayList<MeaningDefinitionExample>> parseMeanings(String meaningsStr) throws JSONException {
         if(meaningsStr == null || meaningsStr.length()<=2) {
             Log.e(TAG, "parseMeanings: Null meaningStr");

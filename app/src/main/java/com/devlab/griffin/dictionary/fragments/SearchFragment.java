@@ -1,6 +1,7 @@
 package com.devlab.griffin.dictionary.fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.constants.Constants;
+import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.models.DictionaryEntry;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.devlab.griffin.dictionary.utils.NetworkUtils;
@@ -50,10 +52,9 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private Context mContext;
 
     public EditText mSearchEditText;
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "clearDoneState";
-    private static final String ARG_PARAM2 = "saveDeleteState";
+    private static final String ARG_PARAM_CLEAR_DONE_STATE = "clearDoneState";
+    private static final String ARG_PARAM_SAVE_DELETE_STATE = "saveDeleteState";
 
     // TODO: Rename and change types of parameters
     private String mClearDoneState;
@@ -62,6 +63,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private MaterialButton mClearDoneButton, mSaveDeleteButton;
+    private Toast mToast;
 
     public VocabFragment meaningFragment, onymsFragment, slangsFragment;
 
@@ -75,8 +77,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     public static SearchFragment newInstance(String clearDoneState, String saveDeleteState) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, clearDoneState);
-        args.putString(ARG_PARAM2, saveDeleteState);
+        args.putString(ARG_PARAM_CLEAR_DONE_STATE, clearDoneState);
+        args.putString(ARG_PARAM_SAVE_DELETE_STATE, saveDeleteState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,8 +87,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mClearDoneState = getArguments().getString(ARG_PARAM1);
-            mSaveDeleteState = getArguments().getString(ARG_PARAM2);
+            mClearDoneState = getArguments().getString(ARG_PARAM_CLEAR_DONE_STATE);
+            mSaveDeleteState = getArguments().getString(ARG_PARAM_SAVE_DELETE_STATE);
         }
     }
 
@@ -190,6 +192,13 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                     mSearchEditText.setText("");
                 }
             });
+
+            mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new SaveWordTask().execute(mWord, meaningStr, onymsStr, slangsStr);
+                }
+            });
         }
     }
 
@@ -198,6 +207,15 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             mSaveDeleteButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.button_save));
             mSaveDeleteButton.setText(mContext.getString(R.string.save_delete_button_save));
         }
+    }
+
+    private void showLongToast(String message) {
+        if(mToast != null) {
+            mToast.cancel();
+        }
+
+        mToast = Toast.makeText(mContext, message, Toast.LENGTH_LONG);
+        mToast.show();
     }
 
     @NonNull
@@ -209,6 +227,9 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             protected void onStartLoading() {
                 if(args == null)
                     return;
+
+                meaningStr = onymsStr = slangsStr = null;
+                mSaveDeleteButton.setEnabled(false);
 
                 showLoadingInChildrenFragments();
                 forceLoad();
@@ -248,6 +269,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(@NonNull Loader<DictionaryEntry> loader, DictionaryEntry dictionaryEntry) {
+        mSaveDeleteButton.setEnabled(true);
         setDictionaryEntry(dictionaryEntry);
     }
 
@@ -311,6 +333,54 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         @Override
         public int getItemCount() {
             return 3;
+        }
+    }
+
+    public class SaveWordTask extends AsyncTask<String, Void, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            mSaveDeleteButton.setEnabled(false);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Long doInBackground(String... params) {
+
+            if(params.length < 4) {
+                return -1L;
+            }
+
+            String word = params[0].toLowerCase();
+            String meanings = params[1];
+            String onyms = params[2];
+            String slangs = params[3];
+
+            if(JsonParsingUtils.IsNullOrEmpty(word) ||
+                    (
+                            JsonParsingUtils.IsNullOrEmpty(meanings) &&
+                                    JsonParsingUtils.IsNullOrEmpty(onyms) &&
+                                    JsonParsingUtils.IsNullOrEmpty(slangs)
+                    )
+            ) {
+                return -1L;
+            }
+
+            return DictionaryQueryAgent.SaveWordEntry(word, meanings, onyms, slangs);
+        }
+
+        @Override
+        protected void onPostExecute(Long savedId) {
+            mSaveDeleteButton.setEnabled(true);
+
+            if(savedId < 0) {
+                Log.e(TAG, "onPostExecute: Failed to save the word: " + mWord);
+                showLongToast(Constants.ERROR_SAVE_FAILED);
+            } else {
+                showLongToast("Successfully saved");
+            }
+
+            super.onPostExecute(savedId);
         }
     }
 }
