@@ -19,4 +19,6 @@
     <string name="clear_done_button_done">DONE</string>
     <string name="save_delete_button_save">SAVE</string>
     <string name="save_delete_button_delete">DELETE</string>
+
+    <string name="history_list_item_default_text">No Words to show</string>
 </resources>

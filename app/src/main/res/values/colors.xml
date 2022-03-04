@@ -11,4 +11,6 @@
     <color name="samosan_dark">#C91D41</color>
     <color name="cream">#FFEDDB</color>
     <color name="button_content">#FEF9E7</color>
+    <color name="list_item_bg">#FFFDE7</color>
+    <color name="list_item_divider">#E0F2F1</color>
 </resources>

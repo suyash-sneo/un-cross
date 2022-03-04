@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
+import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 import com.devlab.griffin.dictionary.models.DictionaryEntry;
 import com.devlab.griffin.dictionary.tasks.SaveHistoryTask;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
@@ -51,6 +52,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DICTIONARY_LOADER = 78;
     private static final String SEARCH_WORD_EXTRA = "word";
     private Context mContext;
+    private FragmentParentEventListener parentEventListener;
 
     public EditText mSearchEditText;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -163,6 +165,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
+        parentEventListener = (FragmentParentEventListener) context;
     }
 
     private void setDictionaryEntry(DictionaryEntry dictionaryEntry) {
@@ -271,8 +274,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(@NonNull Loader<DictionaryEntry> loader, DictionaryEntry dictionaryEntry) {
         mSaveDeleteButton.setEnabled(true);
-        new SaveHistoryTask().execute(mWord, meaningStr, onymsStr, slangsStr);
         setDictionaryEntry(dictionaryEntry);
+        saveInHistory();
     }
 
     @Override
@@ -292,6 +295,12 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         else{
             loaderManager.restartLoader(DICTIONARY_LOADER, wordBundle, this);
         }
+    }
+
+    private void saveInHistory() {
+        SaveHistoryTask saveHistoryTask = new SaveHistoryTask();
+        saveHistoryTask.setParentEventListener(parentEventListener);
+        saveHistoryTask.execute(mWord, meaningStr, onymsStr, slangsStr);
     }
 
     private class VocabAdapter extends FragmentStateAdapter {

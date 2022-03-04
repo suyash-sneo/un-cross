@@ -190,6 +190,24 @@ public class DictionaryQueryAgent {
                 cv);
     }
 
+    public static Cursor GetAllHistoryWordsList() {
+        Cursor cursor = readDb.query(
+                HistoryEntry.TABLE_NAME,
+                new String[] {HistoryEntry._ID, HistoryEntry.COLUMN_WORD},
+                null,
+                null,
+                null,
+                null,
+                HistoryEntry.COLUMN_SAVED_ON + " DESC"
+        );
+
+        if(cursor.getCount() > 0) {
+            return cursor;
+        }
+
+        return null;
+    }
+
     public static void closeDb() {
         writeDb.close();
         readDb.close();

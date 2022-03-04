@@ -15,10 +15,11 @@ import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.fragments.HistoryFragment;
 import com.devlab.griffin.dictionary.fragments.SavedFragment;
 import com.devlab.griffin.dictionary.fragments.SearchFragment;
+import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, FragmentParentEventListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -83,5 +84,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     protected void onDestroy() {
         super.onDestroy();
         DictionaryQueryAgent.closeDb();
+    }
+
+    @Override
+    public void passEventData(String event, String data) {
+        if (event.equals(Constants.EVENT_WORD_FETCHED)) {
+            mHistoryFragment.loadHistoryData();
+        } else if (event.equals(Constants.EVENT_WORD_SAVED)) {
+
+        }
     }
 }
