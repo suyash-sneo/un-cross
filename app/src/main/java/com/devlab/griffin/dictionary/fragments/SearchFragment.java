@@ -30,6 +30,7 @@ import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.models.DictionaryEntry;
+import com.devlab.griffin.dictionary.tasks.SaveHistoryTask;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.devlab.griffin.dictionary.utils.NetworkUtils;
 import com.google.android.material.button.MaterialButton;
@@ -270,6 +271,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(@NonNull Loader<DictionaryEntry> loader, DictionaryEntry dictionaryEntry) {
         mSaveDeleteButton.setEnabled(true);
+        new SaveHistoryTask().execute(mWord, meaningStr, onymsStr, slangsStr);
         setDictionaryEntry(dictionaryEntry);
     }
 
