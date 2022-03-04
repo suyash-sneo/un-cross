@@ -25,6 +25,7 @@ public class Constants {
     public static final String BUTTON_STATE_DELETE = "delete";
 
     public static final long MAX_HISTORY_ENTRIES = 50;
+    public static final long MAX_SAVED_ENTRIES = 200;
 
     public static final String ERROR_SAVE_FAILED = "Failed to Save the word";
 }

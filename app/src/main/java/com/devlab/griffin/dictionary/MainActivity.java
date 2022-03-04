@@ -78,4 +78,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             return false;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DictionaryQueryAgent.closeDb();
+    }
 }

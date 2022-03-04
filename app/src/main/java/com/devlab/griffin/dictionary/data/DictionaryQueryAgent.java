@@ -91,6 +91,16 @@ public class DictionaryQueryAgent {
         writeDb.execSQL(deleteQuery);
     }
 
+    public static void DeleteSavedEntriesOlderThan(long maxSavedEntries) {
+
+        String deleteQuery = "DELETE FROM " + SavedEntry.TABLE_NAME + " WHERE " + SavedEntry._ID + " NOT IN " +
+                "(" +
+                "SELECT " + SavedEntry._ID + " FROM " + SavedEntry.TABLE_NAME + " ORDER BY " + SavedEntry.COLUMN_SAVED_ON + " DESC LIMIT " + maxSavedEntries +
+                ")";
+
+        writeDb.execSQL(deleteQuery);
+    }
+
     public static long SaveWordEntry(String word, String meanings, String onyms, String slangs) {
         if(JsonParsingUtils.IsNullOrEmpty(word) ||
                 (
@@ -103,6 +113,9 @@ public class DictionaryQueryAgent {
             return -1;
         }
 
+        if(GetHistoryCount() >= Constants.MAX_SAVED_ENTRIES) {
+            DeleteSavedEntriesOlderThan(Constants.MAX_SAVED_ENTRIES);
+        }
 
         ContentValues cv = new ContentValues();
         cv.put(SavedEntry.COLUMN_MEANINGS_JSON, meanings);
