@@ -29,6 +29,14 @@ public class Constants {
 
     public static final String EVENT_WORD_FETCHED = "word_fetched";
     public static final String EVENT_WORD_SAVED = "word_saved";
+    public static final String EVENT_SEARCH_FRAGMENT_LOADED = "search_fragment_loaded";
+    public static final String EVENT_VOCAB_FRAGMENT_LOADED = "vocab_fragment_loaded";
+
+    public static final String INTENT_KEY_WORD_ID = "wordId";
+    public static final String INTENT_KEY_WORD = "word";
+    public static final String INTENT_KEY_SCREEN_TYPE = "screenType";
+    public static final String SCREEN_TYPE_SAVED_WORD = "savedWord";
+    public static final String SCREEN_TYPE_HISTORY_WORD = "historyWord";
 
     public static final String ERROR_SAVE_FAILED = "Failed to Save the word";
 }

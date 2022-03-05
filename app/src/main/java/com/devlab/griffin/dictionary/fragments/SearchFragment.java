@@ -104,6 +104,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         mViewPager = (ViewPager2) view.findViewById(R.id.view_pager);
         mClearDoneButton = (MaterialButton) view.findViewById(R.id.clear_done_button);
         mSaveDeleteButton = (MaterialButton) view.findViewById(R.id.save_delete_button);
+        mSearchEditText = (EditText) view.findViewById(R.id.search_edit_text);
+        mSearchEditText.setImeActionLabel("Go", KeyEvent.KEYCODE_ENTER);
 
         return view;
     }
@@ -126,8 +128,6 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         );
         tabLayoutMediator.attach();
 
-        mSearchEditText = (EditText) view.findViewById(R.id.search_edit_text);
-        mSearchEditText.setImeActionLabel("Go", KeyEvent.KEYCODE_ENTER);
         mSearchEditText.setOnEditorActionListener(new  TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -159,6 +159,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
         configureClearDoneButton();
         configureSaveDeleteButton();
+        notifyParentActivity();
     }
 
     @Override
@@ -169,9 +170,13 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void setDictionaryEntry(DictionaryEntry dictionaryEntry) {
-        meaningFragment.setMeanings(dictionaryEntry.getMeanings(), mContext);
-        onymsFragment.setOnyms(dictionaryEntry.getOnyms(), mContext);
-        slangsFragment.setSlangs(dictionaryEntry.getSlangs(), mContext);
+        if(dictionaryEntry == null) {
+            showErrorInChildrenFragments();
+        } else {
+            meaningFragment.setMeanings(dictionaryEntry.getMeanings(), mContext);
+            onymsFragment.setOnyms(dictionaryEntry.getOnyms(), mContext);
+            slangsFragment.setSlangs(dictionaryEntry.getSlangs(), mContext);
+        }
     }
 
     private void showLoadingInChildrenFragments() {
@@ -196,11 +201,14 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                     mSearchEditText.setText("");
                 }
             });
-
-            mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
+        }
+        else {
+            mClearDoneButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.button_back));
+            mClearDoneButton.setText(mContext.getString(R.string.clear_done_button_done));
+            mClearDoneButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    new SaveWordTask().execute(mWord, meaningStr, onymsStr, slangsStr);
+                    getActivity().finish();
                 }
             });
         }
@@ -210,7 +218,55 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         if(mSaveDeleteState.equals(Constants.BUTTON_STATE_SAVE)) {
             mSaveDeleteButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.button_save));
             mSaveDeleteButton.setText(mContext.getString(R.string.save_delete_button_save));
+            mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new SaveWordTask().execute(mWord, meaningStr, onymsStr, slangsStr);
+                }
+            });
         }
+        else {
+            mSaveDeleteButton.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.button_delete));
+            mSaveDeleteButton.setText(mContext.getString(R.string.save_delete_button_delete));
+            mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Delete that word
+                }
+            });
+        }
+    }
+
+    private void  notifyParentActivity() {
+        parentEventListener.passEventData(Constants.EVENT_SEARCH_FRAGMENT_LOADED, "");
+    }
+
+    public void setEditTextWordAndState(String word, boolean isEnabled) {
+        mWord = word;
+        mSearchEditText.setText(word);
+        mSearchEditText.setEnabled(isEnabled);
+    }
+
+    public void setNestedScrollViewPadding(int padding) {
+        meaningFragment.setScrollViewBottomPadding(padding);
+        onymsFragment.setScrollViewBottomPadding(padding);
+        slangsFragment.setScrollViewBottomPadding(padding);
+    }
+
+    public void startUiLoading() {
+        mSaveDeleteButton.setEnabled(false);
+        showLoadingInChildrenFragments();
+    }
+
+    public void setDictionaryStrings(String meanings, String onyms, String slangs) {
+        meaningStr = meanings;
+        onymsStr = onyms;
+        slangsStr = slangs;
+    }
+
+    public void stopUiLoadingAndSetDictionaryEntry(DictionaryEntry entry) {
+        mSaveDeleteButton.setEnabled(true);
+        setDictionaryEntry(entry);
     }
 
     private void showLongToast(String message) {
@@ -233,9 +289,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                     return;
 
                 meaningStr = onymsStr = slangsStr = null;
-                mSaveDeleteButton.setEnabled(false);
-
-                showLoadingInChildrenFragments();
+                startUiLoading();
                 forceLoad();
             }
 
@@ -258,7 +312,6 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                     return dictionaryEntry;
                 }
                 catch (Exception e) {
-                    showErrorInChildrenFragments();
                     Log.e(TAG, "loadInBackground: Exception: ", e.fillInStackTrace());
                     return null;
                 }
@@ -273,8 +326,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(@NonNull Loader<DictionaryEntry> loader, DictionaryEntry dictionaryEntry) {
-        mSaveDeleteButton.setEnabled(true);
-        setDictionaryEntry(dictionaryEntry);
+        stopUiLoadingAndSetDictionaryEntry(dictionaryEntry);
         saveInHistory();
     }
 

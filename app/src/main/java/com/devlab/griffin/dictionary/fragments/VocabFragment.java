@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.constants.Constants;
+import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 import com.devlab.griffin.dictionary.models.MeaningDefinitionExample;
 import com.devlab.griffin.dictionary.models.Onyms;
 import com.devlab.griffin.dictionary.models.UdDefinitionExample;
@@ -44,6 +46,8 @@ public class VocabFragment extends Fragment {
     private LinearLayout mErrorView;
     private ProgressBar mProgressBar;
 
+    private FragmentParentEventListener parentEventListener;
+
     public VocabFragment() {
         // Required empty public constructor
     }
@@ -54,6 +58,12 @@ public class VocabFragment extends Fragment {
         args.putString(ARG_PARAM1, vocabContent);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        parentEventListener = (FragmentParentEventListener) context;
     }
 
     @Override
@@ -79,6 +89,12 @@ public class VocabFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        parentEventListener.passEventData(Constants.EVENT_VOCAB_FRAGMENT_LOADED, mVocabState);
+    }
+
     public void startLoading() {
         resetContent();
         mVocabLayout.setVisibility(View.INVISIBLE);
@@ -101,6 +117,10 @@ public class VocabFragment extends Fragment {
     private void resetContent() {
         mScrollView.smoothScrollTo(0, 0);
         mVocabLayout.removeAllViewsInLayout();
+    }
+
+    public void setScrollViewBottomPadding(int padding) {
+        mScrollView.setPadding(8, 8, 8, padding);
     }
 
     private void appendViewToLayout(View view) {

@@ -1,6 +1,7 @@
 package com.devlab.griffin.dictionary.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.devlab.griffin.dictionary.HistorySavedActivity;
 import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.adapters.HistoryAdapter;
+import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 
@@ -81,11 +84,13 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
     }
 
     @Override
-    public void onClick(long wordId) {
-        if(mToast != null)
-            mToast.cancel();
-        mToast = Toast.makeText(mContext, wordId + " selected", Toast.LENGTH_LONG);
-        mToast.show();
+    public void onClick(long wordId, String word) {
+        Class destinationClass = HistorySavedActivity.class;
+        Intent intentToStartHistorySavedActivity = new Intent(mContext, destinationClass);
+        intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD_ID, wordId);
+        intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD, word);
+        intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_SCREEN_TYPE, Constants.SCREEN_TYPE_HISTORY_WORD);
+        startActivity(intentToStartHistorySavedActivity);
     }
 
     public class HistoryListTask extends AsyncTask<Void, Void, Cursor> {

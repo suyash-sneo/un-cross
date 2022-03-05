@@ -93,7 +93,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
     }
 
     public interface HistoryAdapterOnClickListener {
-        void onClick(long wordId);
+        void onClick(long wordId, String word);
     }
 
     public class HistoryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -111,7 +111,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
             int adapterPosition = getAdapterPosition();
             if(adapterPosition < mHistoryWordId.size()) {
                 long id = mHistoryWordId.get(adapterPosition);
-                mClickHandler.onClick(id);
+                String word = mHistoryWord.get(adapterPosition);
+                mClickHandler.onClick(id, word);
             }
         }
     }
