@@ -95,7 +95,6 @@ public class HistorySavedActivity extends AppCompatActivity implements FragmentP
     }
 
     private void loadDictionaryEntryIntoFragment() {
-        System.out.println("SCREEN TYPE: " + mScreenType);
         if(mScreenType.equals(Constants.SCREEN_TYPE_HISTORY_WORD)) {
             new LoadWordFromDbTask().execute(HistoryEntry.TABLE_NAME, mWord);
         } else {
@@ -123,12 +122,8 @@ public class HistorySavedActivity extends AppCompatActivity implements FragmentP
             String word = params[1].toLowerCase();
             String meanings, onyms, slangs;
 
-            System.out.println("TABLE: " + table);
-
             if(table.equals(HistoryEntry.TABLE_NAME)) {
-                System.out.println("HISTORY WORD: " + word);
                 Cursor cursor = DictionaryQueryAgent.GetHistoryEntryByWord(word);
-                System.out.println("HISTORY CURSOR COUNT: " + cursor.getCount());
                 if(cursor == null || cursor.getCount() < 1 || !cursor.moveToNext()) {
                     return null;
                 }
@@ -140,9 +135,7 @@ public class HistorySavedActivity extends AppCompatActivity implements FragmentP
                 cursor.close();
             }
             else {
-                System.out.println("SAVED WORD: " + word);
                 Cursor cursor = DictionaryQueryAgent.GetSavedEntryByWord(word);
-                System.out.println("SAVED CURSOR COUNT: " + cursor.getCount());
                 if(cursor == null || cursor.getCount() < 1 || !cursor.moveToNext()) {
                     return null;
                 }

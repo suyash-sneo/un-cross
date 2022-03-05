@@ -9,11 +9,12 @@
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/drawable/search_text_bg.xml" value="0.22135416666666666" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/activity_history_saved.xml" value="0.36666666666666664" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
-        <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_history.xml" value="0.36666666666666664" />
+        <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_history.xml" value="0.1" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_saved.xml" value="0.36666666666666664" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_search.xml" value="0.22" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/fragment_vocab.xml" value="0.2015625" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/history_list_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/layout/saved_list_item.xml" value="0.17831813576494426" />
         <entry key="..\:/Udacity android dev projects/Dictionary/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.20520833333333333" />
       </map>
     </option>

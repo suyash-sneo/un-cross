@@ -31,8 +31,6 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
     private RecyclerView mHistoryRecyclerView;
     private HistoryAdapter mHistoryAdapter;
 
-    Toast mToast;
-
     private Context mContext;
 
     public HistoryFragment() {

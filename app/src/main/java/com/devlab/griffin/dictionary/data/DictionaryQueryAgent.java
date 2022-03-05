@@ -208,8 +208,34 @@ public class DictionaryQueryAgent {
         return null;
     }
 
+    public static Cursor GetAllSavedWordsList() {
+        Cursor cursor = readDb.query(
+                SavedEntry.TABLE_NAME,
+                new String[] {SavedEntry._ID, SavedEntry.COLUMN_WORD},
+                null,
+                null,
+                null,
+                null,
+                SavedEntry.COLUMN_SAVED_ON + " DESC"
+        );
+
+        if(cursor.getCount() > 0) {
+            return cursor;
+        }
+
+        return null;
+    }
+
     public static void closeDb() {
         writeDb.close();
         readDb.close();
+    }
+
+    public static int DeleteSavedByWord(String word) {
+        return readDb.delete(
+                SavedEntry.TABLE_NAME,
+                SavedEntry.COLUMN_WORD + "=?",
+                new String[] {word}
+        );
     }
 }

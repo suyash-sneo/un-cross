@@ -31,7 +31,9 @@ import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 import com.devlab.griffin.dictionary.models.DictionaryEntry;
+import com.devlab.griffin.dictionary.tasks.DeleteWordTask;
 import com.devlab.griffin.dictionary.tasks.SaveHistoryTask;
+import com.devlab.griffin.dictionary.tasks.SaveWordTask;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.devlab.griffin.dictionary.utils.NetworkUtils;
 import com.google.android.material.button.MaterialButton;
@@ -66,7 +68,6 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private MaterialButton mClearDoneButton, mSaveDeleteButton;
-    private Toast mToast;
 
     public VocabFragment meaningFragment, onymsFragment, slangsFragment;
 
@@ -221,7 +222,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new SaveWordTask().execute(mWord, meaningStr, onymsStr, slangsStr);
+                    new SaveWordTask(mSaveDeleteButton, mContext).execute(mWord, meaningStr, onymsStr, slangsStr);
                 }
             });
         }
@@ -232,6 +233,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                 @Override
                 public void onClick(View view) {
                     // Delete that word
+                    new DeleteWordTask(getActivity(), mContext).execute(mWord);
                 }
             });
         }
@@ -267,15 +269,6 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     public void stopUiLoadingAndSetDictionaryEntry(DictionaryEntry entry) {
         mSaveDeleteButton.setEnabled(true);
         setDictionaryEntry(entry);
-    }
-
-    private void showLongToast(String message) {
-        if(mToast != null) {
-            mToast.cancel();
-        }
-
-        mToast = Toast.makeText(mContext, message, Toast.LENGTH_LONG);
-        mToast.show();
     }
 
     @NonNull
@@ -396,54 +389,6 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         @Override
         public int getItemCount() {
             return 3;
-        }
-    }
-
-    public class SaveWordTask extends AsyncTask<String, Void, Long> {
-
-        @Override
-        protected void onPreExecute() {
-            mSaveDeleteButton.setEnabled(false);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Long doInBackground(String... params) {
-
-            if(params.length < 4) {
-                return -1L;
-            }
-
-            String word = params[0].toLowerCase();
-            String meanings = params[1];
-            String onyms = params[2];
-            String slangs = params[3];
-
-            if(JsonParsingUtils.IsNullOrEmpty(word) ||
-                    (
-                            JsonParsingUtils.IsNullOrEmpty(meanings) &&
-                                    JsonParsingUtils.IsNullOrEmpty(onyms) &&
-                                    JsonParsingUtils.IsNullOrEmpty(slangs)
-                    )
-            ) {
-                return -1L;
-            }
-
-            return DictionaryQueryAgent.SaveWordEntry(word, meanings, onyms, slangs);
-        }
-
-        @Override
-        protected void onPostExecute(Long savedId) {
-            mSaveDeleteButton.setEnabled(true);
-
-            if(savedId < 0) {
-                Log.e(TAG, "onPostExecute: Failed to save the word: " + mWord);
-                showLongToast(Constants.ERROR_SAVE_FAILED);
-            } else {
-                showLongToast("Successfully saved");
-            }
-
-            super.onPostExecute(savedId);
         }
     }
 }
