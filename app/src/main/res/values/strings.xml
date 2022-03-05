@@ -12,6 +12,8 @@
     <string name="tab_slang_header">slang</string>
 
     <string name="error_view_text">Oops! No data found.</string>
+    <string name="error_view_history">Sorry! No history data found</string>
+    <string name="error_view_saved">You haven\'t saved anything yet</string>
 
     <string name="clear_done_button_clear">CLEAR</string>
     <string name="clear_done_button_done">DONE</string>

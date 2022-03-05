@@ -50,7 +50,6 @@ public class SavedAdapter extends RecyclerView.Adapter<SavedAdapter.SavedAdapter
             return;
         }
 
-        System.out.println("ONBIND VIEW HOLDER: " + position);
         long wordId = mSavedWordId.get(position);
         String word = mSavedWord.get(position);
 
@@ -85,8 +84,6 @@ public class SavedAdapter extends RecyclerView.Adapter<SavedAdapter.SavedAdapter
 
             mSavedWordId = tempSavedWordId;
             mSavedWord = tempSavedWord;
-
-            System.out.println("MSAVEDWORDID LENGTH: " + mSavedWordId.size());
 
             notifyDataSetChanged();
         }

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.devlab.griffin.dictionary.HistorySavedActivity;
@@ -30,6 +31,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
 
     private RecyclerView mHistoryRecyclerView;
     private HistoryAdapter mHistoryAdapter;
+    private LinearLayout mErrorView;
 
     private Context mContext;
 
@@ -54,6 +56,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         mHistoryRecyclerView = (RecyclerView) view.findViewById(R.id.rv_history_words);
+        mErrorView = (LinearLayout) view.findViewById(R.id.error_display);
         return view;
     }
 
@@ -75,6 +78,16 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    private void showError() {
+        mErrorView.setVisibility(View.VISIBLE);
+        mHistoryRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showData() {
+        mErrorView.setVisibility(View.INVISIBLE);
+        mHistoryRecyclerView.setVisibility(View.VISIBLE);
     }
 
     public void loadHistoryData() {
@@ -103,6 +116,9 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
         protected void onPostExecute(Cursor cursor) {
             if(cursor != null) {
                 mHistoryAdapter.updateHistoryListFromCursor(cursor);
+                showData();
+            } else {
+                showError();
             }
             super.onPostExecute(cursor);
         }

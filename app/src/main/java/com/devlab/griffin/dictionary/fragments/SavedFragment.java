@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.devlab.griffin.dictionary.HistorySavedActivity;
 import com.devlab.griffin.dictionary.R;
@@ -29,6 +30,7 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
 
     private RecyclerView mSavedRecyclerView;
     private SavedAdapter mSavedAdapter;
+    private LinearLayout mErrorView;
 
     private Context mContext;
 
@@ -55,6 +57,7 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_saved, container, false);
         mSavedRecyclerView = (RecyclerView) view.findViewById(R.id.rv_saved_words);
+        mErrorView = (LinearLayout) view.findViewById(R.id.error_display);
         return view;
     }
 
@@ -78,6 +81,16 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
         mContext = context;
     }
 
+    private void showError() {
+        mErrorView.setVisibility(View.VISIBLE);
+        mSavedRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showData() {
+        mErrorView.setVisibility(View.INVISIBLE);
+        mSavedRecyclerView.setVisibility(View.VISIBLE);
+    }
+
     public void loadSavedData() {
         new SavedListTask().execute();
     }
@@ -97,7 +110,6 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
         @Override
         protected Cursor doInBackground(Void... voids) {
             Cursor cursor = DictionaryQueryAgent.GetAllSavedWordsList();
-            System.out.println("CURSOR COUNT: " + cursor.getCount());
             return cursor;
         }
 
@@ -105,6 +117,9 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
         protected void onPostExecute(Cursor cursor) {
             if(cursor != null) {
                 mSavedAdapter.updateSavedListFromCursor(cursor);
+                showData();
+            } else {
+                showError();
             }
             super.onPostExecute(cursor);
         }

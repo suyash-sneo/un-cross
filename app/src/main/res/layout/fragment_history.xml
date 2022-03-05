@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    android:id="@+id/sv_history"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_history_words"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/sv_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history_words"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/error_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
-</androidx.core.widget.NestedScrollView>
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        >
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/error_no_data"
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/error_view_history"
+            android:layout_gravity="center"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</FrameLayout>
