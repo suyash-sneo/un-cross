@@ -174,14 +174,14 @@ public class DictionaryQueryAgent {
         if(wordCount > 0) {
             // Update case
             return writeDb.update(
-                    SavedEntry.TABLE_NAME,
+                    HistoryEntry.TABLE_NAME,
                     cv,
-                    SavedEntry.COLUMN_WORD + "=?",
+                    HistoryEntry.COLUMN_WORD + "=?",
                     new String[] {word}
             );
         }
 
-        cv.put(SavedEntry.COLUMN_WORD, word);
+        cv.put(HistoryEntry.COLUMN_WORD, word);
         // Create case
 
         return writeDb.insert(
@@ -193,7 +193,7 @@ public class DictionaryQueryAgent {
     public static Cursor GetAllHistoryWordsList() {
         Cursor cursor = readDb.query(
                 HistoryEntry.TABLE_NAME,
-                new String[] {HistoryEntry._ID, HistoryEntry.COLUMN_WORD},
+                new String[] {HistoryEntry._ID, HistoryEntry.COLUMN_WORD, HistoryEntry.COLUMN_SAVED_ON},
                 null,
                 null,
                 null,
@@ -211,7 +211,7 @@ public class DictionaryQueryAgent {
     public static Cursor GetAllSavedWordsList() {
         Cursor cursor = readDb.query(
                 SavedEntry.TABLE_NAME,
-                new String[] {SavedEntry._ID, SavedEntry.COLUMN_WORD},
+                new String[] {SavedEntry._ID, SavedEntry.COLUMN_WORD, SavedEntry.COLUMN_SAVED_ON},
                 null,
                 null,
                 null,

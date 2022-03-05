@@ -2,6 +2,7 @@ package com.devlab.griffin.dictionary.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,12 @@ import com.devlab.griffin.dictionary.R;
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.HistoryContract.HistoryEntry;
 
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryAdapterViewHolder> {
 
@@ -23,6 +29,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
 
     private ArrayList<Long> mHistoryWordId;
     private ArrayList<String> mHistoryWord;
+    private ArrayList<String> mHistoryDates;
 
     private final HistoryAdapterOnClickListener mClickHandler;
 
@@ -30,6 +37,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
         mClickHandler = clickHandler;
         mHistoryWordId = new ArrayList<Long>(Constants.MAX_HISTORY_ENTRIES);
         mHistoryWord = new ArrayList<String>(Constants.MAX_HISTORY_ENTRIES);
+        mHistoryDates = new ArrayList<String>(Constants.MAX_HISTORY_ENTRIES);
     }
 
     @NonNull
@@ -52,9 +60,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
 
         long wordId = mHistoryWordId.get(position);
         String word = mHistoryWord.get(position);
+        String date = mHistoryDates.get(position);
 
         holder.mWordTextView.setTag(wordId);
         holder.mWordTextView.setText(word);
+        holder.mDateTextView.setText(date);
     }
 
     @Override
@@ -72,18 +82,33 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
 
         int idCursorIndex = cursor.getColumnIndex(HistoryEntry._ID);
         int wordCursorIndex = cursor.getColumnIndex(HistoryEntry.COLUMN_WORD);
+        int dateCursorIndex = cursor.getColumnIndex(HistoryEntry.COLUMN_SAVED_ON);
 
         ArrayList<Long> tempHistoryWordId = new ArrayList<>(cursor.getCount());
         ArrayList<String> tempHistoryWord = new ArrayList<>(cursor.getCount());
+        ArrayList<String> tempHistoryDate = new ArrayList<>(cursor.getCount());
 
         try {
             while(cursor.moveToNext()) {
                 tempHistoryWordId.add(cursor.getLong(idCursorIndex));
                 tempHistoryWord.add(cursor.getString(wordCursorIndex));
+
+                Long timestamp = cursor.getLong(dateCursorIndex) * 1000L;
+                Date date = new java.util.Date(timestamp);
+
+                if (DateUtils.isToday(timestamp)) {
+                    tempHistoryDate.add(Constants.DATE_TODAY);
+                } else if (DateUtils.isToday(date.getTime() + DateUtils.DAY_IN_MILLIS)) {
+                    // Yesterday
+                    tempHistoryDate.add(Constants.DATE_YESTERDAY);
+                } else {
+                    tempHistoryDate.add(new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(date));
+                }
             }
 
             mHistoryWordId = tempHistoryWordId;
             mHistoryWord = tempHistoryWord;
+            mHistoryDates = tempHistoryDate;
 
             notifyDataSetChanged();
         }
@@ -99,10 +124,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryA
     public class HistoryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView mWordTextView;
+        public final TextView mDateTextView;
 
         public HistoryAdapterViewHolder(View view) {
             super(view);
             mWordTextView = (TextView) view.findViewById(R.id.history_item_word);
+            mDateTextView = (TextView) view.findViewById(R.id.history_item_date);
             view.setOnClickListener(this);
         }
 

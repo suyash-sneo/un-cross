@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="0dp"
+    android:background="@drawable/list_item_background"
     >
 
     <TextView
         android:id="@+id/history_item_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/list_item_background"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:text="@string/history_list_item_default_text"
+        />
+
+    <TextView
+        android:id="@+id/history_item_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/teal_700"
+        android:textSize="12sp"
+        android:text="Unknown Date"
         />
 
 </LinearLayout>

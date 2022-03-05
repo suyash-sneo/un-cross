@@ -38,5 +38,8 @@ public class Constants {
     public static final String SCREEN_TYPE_SAVED_WORD = "savedWord";
     public static final String SCREEN_TYPE_HISTORY_WORD = "historyWord";
 
+    public static final String DATE_TODAY = "Today";
+    public static final String DATE_YESTERDAY = "Yesterday";
+
     public static final String ERROR_SAVE_FAILED = "Failed to Save the word";
 }
