@@ -16,11 +16,14 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryDbHelper;
+import com.devlab.griffin.dictionary.data.DictionaryDefaultData;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
 import com.devlab.griffin.dictionary.fragments.HistoryFragment;
 import com.devlab.griffin.dictionary.fragments.SavedFragment;
 import com.devlab.griffin.dictionary.fragments.SearchFragment;
 import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
+import com.devlab.griffin.dictionary.models.DictionaryEntry;
+import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     public HistoryFragment mHistoryFragment;
     public SavedFragment mSavedFragment;
     public Fragment activeFragment;
+
+    private boolean searchLoaded = false, meaningsLoaded = false, onymsLoaded = false, slangsLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +112,40 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         DictionaryQueryAgent.closeDb();
     }
 
+    private void updateFragmentEditTextState() {
+        mSearchFragment.setEditTextWordAndState(DictionaryDefaultData.defaultWord, true);
+    }
+
+    private void putDictionaryEntryIntoFragment(DictionaryEntry dictionaryEntry) {
+        mSearchFragment.stopUiLoadingAndSetDictionaryEntry(dictionaryEntry);
+    }
+
     @Override
     public void passEventData(String event, String data) {
         if (event.equals(Constants.EVENT_WORD_FETCHED)) {
             mHistoryFragment.loadHistoryData();
         } else if (event.equals(Constants.EVENT_WORD_SAVED)) {
             mSavedFragment.loadSavedData();
+        } else if(event.equals(Constants.EVENT_SEARCH_FRAGMENT_LOADED) || event.equals(Constants.EVENT_VOCAB_FRAGMENT_LOADED)) {
+            if(event.equals(Constants.EVENT_SEARCH_FRAGMENT_LOADED)) {
+                searchLoaded = true;
+                updateFragmentEditTextState();
+            }
+            else {
+                if (data.equals(Constants.MEANING_FRAGMENT_STATE))
+                    meaningsLoaded = true;
+                else if (data.equals(Constants.ONYMS_FRAGMENT_STATE))
+                    onymsLoaded = true;
+                else if (data.equals(Constants.SLANGS_FRAGMENT_STATE))
+                    slangsLoaded = true;
+            }
+
+            boolean allChildrenLoaded = searchLoaded & meaningsLoaded & onymsLoaded & slangsLoaded;
+            if(allChildrenLoaded) {
+                DictionaryEntry dictionaryEntry = JsonParsingUtils.parseDictionaryEntry(DictionaryDefaultData.defaultMeaning, DictionaryDefaultData.defaultOnyms, DictionaryDefaultData.defaultSlang);
+                mSearchFragment.setDictionaryStrings(DictionaryDefaultData.defaultMeaning, DictionaryDefaultData.defaultOnyms, DictionaryDefaultData.defaultSlang);
+                putDictionaryEntryIntoFragment(dictionaryEntry);
+            }
         }
     }
 }

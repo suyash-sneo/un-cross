@@ -5,13 +5,11 @@
     <string name="page_nav_saved">Saved</string>
 
     <string name="search_edit_text_hint">Enter word here</string>
-    <string name="search_edit_text_default">Dictionary</string>
+    <string name="search_edit_text_default">dictionary</string>
 
     <string name="tab_meaning_header">meaning</string>
     <string name="tab_onyms_header">-onyms</string>
     <string name="tab_slang_header">slang</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="error_view_text">Oops! No data found.</string>
 
