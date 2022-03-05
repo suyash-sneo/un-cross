@@ -89,7 +89,7 @@ public class SavedFragment extends Fragment implements SavedAdapter.SavedAdapter
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD_ID, wordId);
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD, word);
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_SCREEN_TYPE, Constants.SCREEN_TYPE_SAVED_WORD);
-        startActivity(intentToStartHistorySavedActivity);
+        startActivityForResult(intentToStartHistorySavedActivity, 0);
     }
 
     public class SavedListTask extends AsyncTask<Void, Void, Cursor> {

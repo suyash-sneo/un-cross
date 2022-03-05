@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryQueryAgent;
+import com.devlab.griffin.dictionary.interfaces.FragmentParentEventListener;
 import com.devlab.griffin.dictionary.utils.JsonParsingUtils;
 import com.devlab.griffin.dictionary.utils.ToastUtils;
 import com.google.android.material.button.MaterialButton;
@@ -19,11 +20,17 @@ public class SaveWordTask extends AsyncTask<String, Void, Long> {
 
     private final WeakReference<MaterialButton> buttonWeakReference;
     private final WeakReference<Context> contextWeakReference;
+    private FragmentParentEventListener parentEventListener;
     private String mWord;
 
-    public SaveWordTask(MaterialButton saveDeleteButton, Context context) {
+    public SaveWordTask(MaterialButton saveDeleteButton, Context context, FragmentParentEventListener eventListener) {
         buttonWeakReference = new WeakReference<>(saveDeleteButton);
         contextWeakReference = new WeakReference<>(context);
+        parentEventListener = eventListener;
+    }
+
+    private void updateSavedView() {
+        this.parentEventListener.passEventData(Constants.EVENT_WORD_SAVED, "");
     }
 
     @Override
@@ -67,6 +74,7 @@ public class SaveWordTask extends AsyncTask<String, Void, Long> {
             Log.e(TAG, "onPostExecute: Failed to save the word: " + mWord);
             ToastUtils.showLongToast(contextWeakReference.get(), Constants.ERROR_SAVE_FAILED);
         } else {
+            updateSavedView();
             ToastUtils.showLongToast(contextWeakReference.get(), "Successfully saved");
         }
 

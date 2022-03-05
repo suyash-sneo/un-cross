@@ -1,10 +1,12 @@
 package com.devlab.griffin.dictionary;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -94,6 +96,12 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mSavedFragment.loadSavedData();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         DictionaryQueryAgent.closeDb();
@@ -104,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         if (event.equals(Constants.EVENT_WORD_FETCHED)) {
             mHistoryFragment.loadHistoryData();
         } else if (event.equals(Constants.EVENT_WORD_SAVED)) {
-
+            mSavedFragment.loadSavedData();
         }
     }
 }

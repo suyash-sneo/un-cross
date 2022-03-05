@@ -222,7 +222,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             mSaveDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new SaveWordTask(mSaveDeleteButton, mContext).execute(mWord, meaningStr, onymsStr, slangsStr);
+                    new SaveWordTask(mSaveDeleteButton, mContext, (FragmentParentEventListener) mContext).execute(mWord, meaningStr, onymsStr, slangsStr);
                 }
             });
         }

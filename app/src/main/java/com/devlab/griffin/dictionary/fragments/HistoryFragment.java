@@ -88,7 +88,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.HistoryA
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD_ID, wordId);
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_WORD, word);
         intentToStartHistorySavedActivity.putExtra(Constants.INTENT_KEY_SCREEN_TYPE, Constants.SCREEN_TYPE_HISTORY_WORD);
-        startActivity(intentToStartHistorySavedActivity);
+        startActivityForResult(intentToStartHistorySavedActivity, 0);
     }
 
     public class HistoryListTask extends AsyncTask<Void, Void, Cursor> {
