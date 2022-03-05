@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.devlab.griffin.dictionary.constants.Constants;
 import com.devlab.griffin.dictionary.data.DictionaryDbHelper;
@@ -55,8 +58,18 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         DictionaryQueryAgent.initializeDb(this);
     }
 
+    private void hideSoftKeyboard() {
+        View view = getCurrentFocus();
+        if(view == null)
+            view = new View(this);
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        hideSoftKeyboard();
         int itemId = item.getItemId();
 
         if(itemId == R.id.page_nav_search) {
